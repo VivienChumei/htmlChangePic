@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>一键生成图片</title>
+    <!-- html2canvas将Dom节点在Canvas里边画出来 -->
+    <script src="js/html2canvas.min.js"></script>
+
+    <!-- 将canvas图片保存成图片 -->
+    <script src="js/canvas2image.js"></script>
+    <script src="js/base64.js"></script>
+    <style>
+        p {
+            font-size: 15px;
+            font-family: 'Microsoft YaHei', 'Lantinghei SC', 'Open Sans', Arial, 'Hiragino Sans GB', 'STHeiti', 'WenQuanYi Micro Hei', 'SimSun', sans-serif;
+        }
+
+        #content {
+            border-radius: 3px;
+            position: relative;
+            height:504px;
+        }
+
+        #btnSave, #Download {
+            width: 78px;
+            height: 30px;
+            background-color: #22b4f6;
+            color: #fff;
+            text-align: center;
+            border-radius: 3px;
+            border: none;
+        }
+
+        #Download {
+            margin-left: 250px;
+        }
+        img{
+            width: 100%;
+        }
+        .ele{
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <button id="btnSave">转成图片</button>
+    <button id="Download">下载图片</button>
+    <br/>
+    <br/>
+    <br/>
+</div>
+<div id="content" style="width:320px;border:1px solid #22b4f6;display:inline-block;text-align:center;">
+    <div class="ele" style="z-index:2; width:159px; left:106px; top:54px;"><div class="ani false" swiper-animate-effect="pulse" swiper-animate-duration=" 1s" swiper-animate-delay=" 0"><div style="opacity:100; transform: rotate(0deg); color: #000000; text-align:left; line-height:1; font-family:微软雅黑 ; font-size:41px; white-space: pre-line;font-weight: normal">请输入文本232</div></div></div>
+    <div class="ele" style="z-index:1; width:100px; left:79px; top:301px;"><div class="ani loop " swiper-animate-effect="flash" swiper-animate-duration=" 1s" swiper-animate-delay=" 0"><div style="opacity:100; transform: rotate(0deg); color: #000000; text-align:left; line-height:1; font-family:微软雅黑 ; font-size:18px; white-space: pre-line;font-weight: bold">请输入文本</div></div></div>
+    <div class="ele" style="z-index:2; width:159px; left:1px; top:31px;"><div class="ani false" swiper-animate-effect="pulse" swiper-animate-duration=" 1s" swiper-animate-delay=" 0"><div style="opacity:100; transform: rotate(0deg); color: #000000; text-align:left; line-height:1; font-family:微软雅黑 ; font-size:41px; white-space: pre-line;font-weight: normal">请输入文本</div></div></div>
+    <div class="ele" style="z-index: 7; width: 175px; height:108px; left:81px; top:319px;"><div class="ani loop" swiper-animate-effect="flash" swiper-animate-duration="1s" swiper-animate-delay="0"><img class="ele-img" src="/upload/all/4cd7cd90ba2f11e7ab150f280ffc58cb.png" style="opacity: 100; transform: rotate(0deg)"></div></div>
+    <div class="ele" style="z-index: 8; width: 172px; height:112px; left:97px; top:143px;"><div class="ani false" swiper-animate-effect="shake" swiper-animate-duration="1s" swiper-animate-delay="0"><img class="ele-img" src="/upload/all/ae9d67b0ba2f11e7ab150f280ffc58cb.png" style="opacity: 100; transform: rotate(0deg)"></div></div>
+  </div>
+<div style="width:60px;display:inline-block;text-align:center;font-size:30px;color:#22b4f6;">==>
+</div>
+<div id="images" style="width:320px;display:inline-block;text-align:center;vertical-align: top;">图片预览区</div>
+</body>
+<script>
+  /*生成canvas图形*/
+
+  // 获取按钮id
+  var btnSave = document.getElementById('btnSave')
+  // 获取内容id
+  var content = document.getElementById('content')
+  // 进行canvas生成
+  btnSave.onclick = function () {
+    html2canvas(content, {
+      onrendered: function (canvas) {
+        //添加属性
+        canvas.setAttribute('id', 'thecanvas')
+        //读取属性值
+        // var value= canvas.getAttribute('id');
+        document.getElementById('images').innerHTML = ''
+        document.getElementById('images').appendChild(canvas)
+      }
+    })
+  }
+</script>
+<script>
+  /*
+   * 说明
+   * 不支持跨域图片
+   * 不能在浏览器插件中使用
+   * 部分浏览器上不支持SVG图片
+   * 不支持Flash
+   */
+  var Download = document.getElementById('Download')
+  Download.onclick = function () {
+    var oCanvas = document.getElementById('thecanvas')
+
+    /*自动保存为png*/
+    // 获取图片资源
+    var img_data1 = Canvas2Image.saveAsPNG(oCanvas, true).getAttribute('src')
+    saveFile(img_data1, 'demo.png')
+
+    /*下面的为原生的保存，不带格式名*/
+    // 这将会提示用户保存PNG图片
+    // Canvas2Image.saveAsPNG(oCanvas);
+  }
+  // 保存文件函数
+  var saveFile = function (data, filename) {
+    // 有效的命名空间URIEdit
+    // HTML - 参阅 http://www.w3.org/1999/xhtml
+    // SVG - 参阅 http://www.w3.org/2000/svg
+    // XBL - 参阅 http://www.mozilla.org/xbl
+    // XUL - 参阅 http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul
+    var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a')
+    save_link.href = data
+    save_link.download = filename
+
+    var event = document.createEvent('MouseEvents')
+    event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+    save_link.dispatchEvent(event)
+  }
+</script>
+</html>
