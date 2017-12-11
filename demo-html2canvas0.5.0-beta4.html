@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>一键生成图片</title>
+    <!-- html2canvas将Dom节点在Canvas里边画出来 -->
+    <script src="js/html2canvas.min.js"></script>
+
+    <!-- 将canvas图片保存成图片 -->
+    <script src="js/canvas2image.js"></script>
+    <script src="js/base64.js"></script>
+    <style>
+        p {
+            font-size: 15px;
+            font-family: 'Microsoft YaHei', 'Lantinghei SC', 'Open Sans', Arial, 'Hiragino Sans GB', 'STHeiti', 'WenQuanYi Micro Hei', 'SimSun', sans-serif;
+        }
+
+        #content {
+            border-radius: 3px;
+            position: relative;
+            height: 504px;
+        }
+
+        button, #Download {
+            width: 105px;
+            height: 30px;
+            background-color: #22b4f6;
+            color: #fff;
+            text-align: center;
+            border-radius: 3px;
+            border: none;
+        }
+
+        #Download {
+            margin-left: 250px;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        .ele {
+            position: absolute;
+        }
+
+        .ele-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .ele-bg img {
+            height: 100%;
+            width: auto;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            -webkit-transform: translateX(-50%);
+        }
+
+        .content {
+            position: relative;
+            overflow: hidden
+        }
+    </style>
+</head>
+<body>
+<div>
+    <button id="btnSave">容器1转成图片</button>
+    <button id="btnSave2">容器2转成图片</button>
+    <button id="Download">下载图片</button>
+    <br/>
+    <br/>
+    <br/>
+</div>
+<div class="content" style="width:320px;border:1px solid #22b4f6;display:inline-block;text-align:center;">
+    <section class="swiper-slide flat swiper-slide-active" data-key="3" style="display: block; height: 667px;">
+        <div class="ele-bg">
+            <img src="https://ceslighttest.blob.core.chinacloudapi.cn/testmoinuserblobcontainer/user/editH5/my/18/5357456586976548813.png">
+        </div>
+    </section>
+</div>
+<div class="content" id="con2" style="width:320px;border:1px solid #22b4f6;display:inline-block;text-align:center;">
+    <section class="swiper-slide flat swiper-slide-active" data-key="3" style="display: block; height: 667px;">
+        <div class="ele-bg" style="opacity:1;">
+            <img src="https://ceslighttest.blob.core.chinacloudapi.cn/testmoinuserblobcontainer/user/editH5/my/18/5357456586976548813.png">
+        </div>
+        <div class="resize-container mediate flat" style="width: 320px; height: 508px; ">
+            <div class="ele" onclick="trigger({'type':0,'detail':[]})" id="moin-93"
+                 style="display:block;top: 303;left:78;">
+                <div class="false" swiper-animate-effect="" swiper-animate-duration=" 1s" swiper-animate-delay=" 0">
+                    <button type="button"
+                            style="border-color: #cccccc; background-color: skyblue;width: 100px; height: 30px; opacity: 1;color: #ffffff;border-style: solid;padding: 10px;">
+                        保存图片
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div onclick="trigger({'type':0,'detail':[]})" class="ele text" id="moin-101"
+             style="display:block;z-index:4; width:174px; left:58px; top:78px;">
+            <div class="false" swiper-animate-effect="" swiper-animate-duration=" 1s" swiper-animate-delay=" 0">
+                <div style="border-style: solid;border-color: #cccccc;border-width: 0; border-radius: 0px;opacity:1; color: #000000; text-align:left;text-decoration:none; line-height:1.5; font-family:微软雅黑 ; font-size:26px; white-space: pre-line;font-weight: bold">
+                    优惠券凭证ss
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div style="width:60px;display:inline-block;text-align:center;font-size:30px;color:#22b4f6;">==>
+</div>
+<div id="images" style="width:320px;display:inline-block;text-align:center;vertical-align: top;">图片预览区</div>
+</body>
+<script>
+    window.onload = function () {
+        // 获取按钮id
+        var btnSave = document.getElementById('btnSave')
+        var btnSave2 = document.getElementById('btnSave2')
+        // 获取内容id
+        var content = document.querySelectorAll('.content')
+        // 进行canvas生成
+        btnSave.onclick = function () {
+            changePic(content[0])
+        }
+        btnSave2.onclick = function () {
+            changePic(content[1])
+        }
+    }
+
+    /*生成canvas图形*/
+    // html转成图片
+    function changePic(dom) {
+        var devPx = window.devicePixelRatio //设备像素，设置为1
+        window.devicePixelRatio = devPx > 1 ? 1 : 1; // 不设置为1，会导致canvas生成不是百分之100
+        html2canvas(dom, {
+            useCORS: true,
+            onrendered: function (canvas) {
+                //添加属性
+                canvas.setAttribute('id', 'thecanvas')
+                //读取属性值
+                document.getElementById('images').innerHTML = ''
+                document.getElementById('images').appendChild(canvas)
+                window.devicePixelRatio = devPx
+            }
+        })
+    }
+</script>
+<script>
+    /*
+     * 说明
+     * 不支持跨域图片
+     * 不能在浏览器插件中使用
+     * 部分浏览器上不支持SVG图片
+     * 不支持Flash
+     */
+    var Download = document.getElementById('Download')
+    Download.onclick = function () {
+        var oCanvas = document.getElementById('thecanvas')
+
+        /*自动保存为png*/
+        // 获取图片资源
+        var img_data1 = Canvas2Image.saveAsPNG(oCanvas, true).getAttribute('src')
+        saveFile(img_data1, 'demo.png')
+
+        /*下面的为原生的保存，不带格式名*/
+        // 这将会提示用户保存PNG图片
+        // Canvas2Image.saveAsPNG(oCanvas);
+    }
+    // 保存文件函数
+    var saveFile = function (data, filename) {
+        // 有效的命名空间URIEdit
+        // HTML - 参阅 http://www.w3.org/1999/xhtml
+        // SVG - 参阅 http://www.w3.org/2000/svg
+        // XBL - 参阅 http://www.mozilla.org/xbl
+        // XUL - 参阅 http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul
+        var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a')
+        save_link.href = data
+        save_link.download = filename
+
+        var event = document.createEvent('MouseEvents')
+        event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+        save_link.dispatchEvent(event)
+    }
+</script>
+</html>
